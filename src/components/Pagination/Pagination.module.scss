@@ -1,0 +1,18 @@
+.root {
+  li {
+    display: inline-flex;
+    a {
+      display: flex;
+      padding: 5px 5px;
+      border: 1px solid black;
+      border-radius: 20px;
+      width: 50px;
+      height: 40px;
+      font-size: 20px;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+}
