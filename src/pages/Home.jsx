@@ -10,8 +10,8 @@ import PizzaBlock from '../components/PizzaBlock';
 import Pagination from '../components/Pagination';
 
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/slises/filterSlice';
-import axios from 'axios';
 import { someContext } from '../App';
+import { fetchPizzas } from '../redux/slises/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,12 +19,10 @@ const Home = () => {
   const isMounted = React.useRef(false);
 
   const isSearch = React.useRef(false);
-
+  const { items, status } = useSelector((state) => state.pizza);
   const { activeCategory, sort, currentPage } = useSelector((state) => state.filter);
 
   const { searchText } = React.useContext(someContext);
-  const [items, setItems] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
 
   const setActiveCategory = (id) => {
     dispatch(setCategoryId(id));
@@ -34,20 +32,21 @@ const Home = () => {
     dispatch(setCurrentPage(page));
   };
 
-  const fetchPizzas = () => {
-    setIsLoading(true);
-
+  const getPizzas = async () => {
     const order = sort.sortProperty.includes('-') ? 'asc' : 'desc';
     const sorting = sort.sortProperty.replace('-', '');
     const category = activeCategory > 0 ? `category=${activeCategory}` : '';
     const search = searchText ? `&search=${searchText}` : '';
 
-    axios
-      .get(`https://65019992736d26322f5bfd85.mockapi.io/items?limit=4&page=${currentPage}&${category}&sortBy=${sorting}&order=${order}${search}`)
-      .then((res) => {
-        setItems(res.data);
-        setIsLoading(false);
-      });
+    dispatch(
+      fetchPizzas({
+        order,
+        sorting,
+        category,
+        search,
+        currentPage,
+      })
+    );
   };
 
   React.useEffect(() => {
@@ -67,9 +66,7 @@ const Home = () => {
   });
 
   React.useEffect(() => {
-    if (!isSearch.current) {
-      fetchPizzas();
-    }
+    getPizzas();
     isSearch.current = false;
   }, [activeCategory, sort.sortProperty, searchText, currentPage]);
 
@@ -103,7 +100,14 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? skeletons : pizzas}</div>
+      {status === 'error' ? (
+        <div>
+          <h1>Ошибка при получении пицц</h1>
+          <h4>Похоже, кто-то их сьел...</h4>
+        </div>
+      ) : (
+        <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
+      )}
       <Pagination value={currentPage} onChangePage={onChangePage} />
     </div>
   );
