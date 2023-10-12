@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  searchText: '',
   activeCategory: 0,
   currentPage: 1,
   sort: {
@@ -17,6 +18,9 @@ const filterSlice = createSlice({
       // в обьектах это называется метод, хотя по факту функция
       state.activeCategory = action.payload;
     },
+    setSearchText(state, action) {
+      state.searchText = action.payload;
+    },
     setSort(state, action) {
       state.sort = action.payload;
     },
@@ -31,6 +35,9 @@ const filterSlice = createSlice({
   },
 });
 
-export const { setCategoryId, setSort, setCurrentPage, setFilters } = filterSlice.actions;
+export const sortSelector = (state) => state.filter.sort;
+export const filterSelector = (state) => state.filter;
+
+export const { setCategoryId, setSort, setCurrentPage, setFilters, setSearchText } = filterSlice.actions;
 
 export default filterSlice.reducer;

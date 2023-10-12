@@ -9,9 +9,8 @@ import PizzaSkeleton from '../components/PizzaBlock/PizzaSkeleton';
 import PizzaBlock from '../components/PizzaBlock';
 import Pagination from '../components/Pagination';
 
-import { setCategoryId, setCurrentPage, setFilters } from '../redux/slises/filterSlice';
-import { someContext } from '../App';
-import { fetchPizzas } from '../redux/slises/pizzaSlice';
+import { filterSelector, setCategoryId, setCurrentPage, setFilters } from '../redux/slises/filterSlice';
+import { fetchPizzas, selectPizzaData } from '../redux/slises/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,10 +18,8 @@ const Home = () => {
   const isMounted = React.useRef(false);
 
   const isSearch = React.useRef(false);
-  const { items, status } = useSelector((state) => state.pizza);
-  const { activeCategory, sort, currentPage } = useSelector((state) => state.filter);
-
-  const { searchText } = React.useContext(someContext);
+  const { items, status } = useSelector(selectPizzaData);
+  const { activeCategory, sort, currentPage, searchText } = useSelector(filterSelector);
 
   const setActiveCategory = (id) => {
     dispatch(setCategoryId(id));
