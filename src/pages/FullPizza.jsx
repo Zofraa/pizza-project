@@ -1,11 +1,11 @@
 import React from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const FullPizza = () => {
   const [pizza, setPizza] = React.useState();
   const { id } = useParams();
-  console.log(id);
+  const navigate = useNavigate();
   console.log(useParams());
 
   React.useEffect(() => {
@@ -15,6 +15,7 @@ const FullPizza = () => {
         setPizza(data);
       } catch (error) {
         alert('ошибк');
+        navigate('/');
       }
     }
 
