@@ -1,7 +1,7 @@
 import React from 'react';
 import qs from 'qs';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Categories from '../components/Categories';
 import Sort, { sortTypes } from '../components/Sort';
@@ -82,16 +82,14 @@ const Home = () => {
 
   const pizzas = items
     .filter((pizza) => {
+      console.log(pizza);
       if (pizza.name.toLowerCase().includes(searchText.toLowerCase())) {
         return true;
       }
       return false;
     })
-    .map((pizza) => (
-      <Link key={pizza.id} to={`/pizza/${pizza.id}`}>
-        <PizzaBlock {...pizza} />
-      </Link>
-    ));
+    .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
+  console.log(pizzas);
   const skeletons = [...new Array(8)].map((_, index) => <PizzaSkeleton key={index} />);
 
   return (
