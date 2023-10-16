@@ -2,13 +2,19 @@ import React from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const FullPizza = () => {
-  const [pizza, setPizza] = React.useState();
+const FullPizza: React.FC = () => {
+  // FC - функциональный компонент
+  const [pizza, setPizza] = React.useState<{
+    imageUrl: string;
+    name: string;
+    price: number;
+  }>();
   const { id } = useParams();
   const navigate = useNavigate();
   console.log(useParams());
 
   React.useEffect(() => {
+    // useEffect не типизируется вообще
     async function fetchPizza() {
       try {
         const { data } = await axios.get('https://65019992736d26322f5bfd85.mockapi.io/items/' + id);
@@ -23,7 +29,7 @@ const FullPizza = () => {
   }, []);
 
   if (!pizza) {
-    return 'загрузка';
+    return <>загрузка...</>;
   }
 
   return (
