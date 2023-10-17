@@ -2,7 +2,12 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSort, sortSelector } from '../redux/slises/filterSlice';
 
-export const sortTypes = [
+type SortItem = {
+  name: string;
+  sortProperty: string;
+}; // создали СВОЙ тип для повторного переиспользования в другом месте, а не писать это все каждый раз
+
+export const sortTypes: SortItem[] = [
   { name: 'популярности desc', sortProperty: 'rating' },
   { name: 'популярности asc', sortProperty: '-rating' },
   { name: 'цене desc', sortProperty: 'price' },
@@ -14,17 +19,17 @@ export const sortTypes = [
 function Sort() {
   const dispatch = useDispatch();
   const sort = useSelector(sortSelector);
-  const sortRef = React.useRef();
+  const sortRef = React.useRef<HTMLDivElement>(null); // если ничего изначально нету, тогда null
 
   const [open, setOpen] = React.useState(false);
 
-  const selecting = (index) => {
+  const selecting = (index: SortItem) => {
     dispatch(setSort(index));
     setOpen(false);
   };
 
   React.useEffect(() => {
-    const clickOutside = (event) => {
+    const clickOutside = (event: any) => {
       if (!event.composedPath().includes(sortRef.current)) {
         setOpen(false);
       }

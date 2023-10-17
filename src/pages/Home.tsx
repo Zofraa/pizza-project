@@ -12,7 +12,8 @@ import Pagination from '../components/Pagination';
 import { filterSelector, setCategoryId, setCurrentPage, setFilters } from '../redux/slises/filterSlice';
 import { fetchPizzas, selectPizzaData } from '../redux/slises/pizzaSlice';
 
-const Home = () => {
+const Home: React.FC = () => {
+  const temp: any = window;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isMounted = React.useRef(false);
@@ -21,11 +22,11 @@ const Home = () => {
   const { items, status } = useSelector(selectPizzaData);
   const { activeCategory, sort, currentPage, searchText } = useSelector(filterSelector);
 
-  const setActiveCategory = (id) => {
+  const setActiveCategory = (id: number) => {
     dispatch(setCategoryId(id));
   };
 
-  const onChangePage = (page) => {
+  const onChangePage = (page: number) => {
     dispatch(setCurrentPage(page));
   };
 
@@ -36,6 +37,7 @@ const Home = () => {
     const search = searchText ? `&search=${searchText}` : '';
 
     dispatch(
+      // @ts-ignore
       fetchPizzas({
         order,
         sorting,
@@ -47,8 +49,9 @@ const Home = () => {
   };
 
   React.useEffect(() => {
-    if (window.Location.search) {
-      const params = qs.parse(window.Location.search);
+    if (temp.Location.search) {
+      // в начале функционального компонента указал константу temp = window, т.к в TS такого типа нет
+      const params = qs.parse(temp.Location.search);
 
       const sortList = sortTypes.find((obj) => obj.sortProperty === params.sortProperty);
 
@@ -81,14 +84,14 @@ const Home = () => {
   }, [activeCategory, sort.sortProperty, currentPage, navigate]);
 
   const pizzas = items
-    .filter((pizza) => {
+    .filter((pizza: any) => {
       console.log(pizza);
       if (pizza.name.toLowerCase().includes(searchText.toLowerCase())) {
         return true;
       }
       return false;
     })
-    .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
+    .map((pizza: any) => <PizzaBlock key={pizza.id} {...pizza} />);
   console.log(pizzas);
   const skeletons = [...new Array(8)].map((_, index) => <PizzaSkeleton key={index} />);
 

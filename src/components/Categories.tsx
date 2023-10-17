@@ -1,6 +1,10 @@
-import React from 'react';
+type Categories = {
+  category: number;
+  setCategory: any;
+};
 
-function Categories({ category, setCategory }) {
+const Categories: React.FC<Categories> = ({ category, setCategory }) => {
+  // или можно было бы так: ({ category, setCategory }:Categories)   хотя это не очень способ
   const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
   return (
@@ -14,6 +18,6 @@ function Categories({ category, setCategory }) {
       </ul>
     </div>
   );
-}
+};
 
 export default Categories;
