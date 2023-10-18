@@ -1,11 +1,14 @@
-type Categories = {
+import React from 'react';
+
+type CategoriesProps = {
   category: number;
-  setCategory: any;
+  setCategory: (i: number) => void; // плевать как назвать тут аргумент, void значит что функция ничего не вернет
 };
 
-const Categories: React.FC<Categories> = ({ category, setCategory }) => {
+const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
+
+const Categories: React.FC<CategoriesProps> = ({ category, setCategory }) => {
   // или можно было бы так: ({ category, setCategory }:Categories)   хотя это не очень способ
-  const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
   return (
     <div className="categories">

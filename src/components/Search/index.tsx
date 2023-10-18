@@ -17,7 +17,8 @@ const Search: React.FC = () => {
     []
   );
 
-  const onChangeImput = (ev: any) => {
+  const onChangeImput = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    // ChangeEvent для изменения input и пр, но не для onClick
     setValue(ev.target.value);
     updateImput(ev.target.value);
   };
