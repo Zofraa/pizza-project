@@ -1,6 +1,6 @@
 import React from 'react';
 import qs from 'qs';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import Categories from '../components/Categories';
@@ -9,13 +9,14 @@ import PizzaSkeleton from '../components/PizzaBlock/PizzaSkeleton';
 import PizzaBlock from '../components/PizzaBlock';
 import Pagination from '../components/Pagination';
 
-import { filterSelector, setCategoryId, setCurrentPage, setFilters } from '../redux/slises/filterSlice';
+import { FilterSliceState, filterSelector, setCategoryId, setCurrentPage, setFilters } from '../redux/slises/filterSlice';
 import { fetchPizzas, selectPizzaData } from '../redux/slises/pizzaSlice';
+import { useAppDispatch } from '../redux/store';
 
 const Home: React.FC = () => {
   const temp: any = window;
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isMounted = React.useRef(false);
 
   const isSearch = React.useRef(false);
@@ -37,13 +38,12 @@ const Home: React.FC = () => {
     const search = searchText ? `&search=${searchText}` : '';
 
     dispatch(
-      // @ts-ignore
       fetchPizzas({
         order,
         sorting,
         category,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       })
     );
   };
@@ -51,16 +51,13 @@ const Home: React.FC = () => {
   React.useEffect(() => {
     if (temp.Location.search) {
       // в начале функционального компонента указал константу temp = window, т.к в TS такого типа нет
-      const params = qs.parse(temp.Location.search);
+      const params = qs.parse(temp.Location.search) as unknown as FilterSliceState;
 
-      const sortList = sortTypes.find((obj) => obj.sortProperty === params.sortProperty);
-
-      dispatch(
-        setFilters({
-          ...params,
-          sortList,
-        })
-      );
+      const sortList = sortTypes.find((obj) => obj.sortProperty === params.sort.sortProperty);
+      if (sortList) {
+        params.searchText = searchText;
+      }
+      dispatch(setFilters(params));
       isSearch.current = true;
     }
   });

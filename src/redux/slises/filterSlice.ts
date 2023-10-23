@@ -1,6 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 
-const initialState = {
+export type TSort = {
+  name: string;
+  sortProperty: 'raiting' | 'name' | 'price' | '-raiting' | '-name' | '-price';
+};
+
+export type FilterSliceState = {
+  searchText: string;
+  activeCategory: number;
+  currentPage: number;
+  sort: TSort;
+};
+
+const initialState: FilterSliceState = {
   searchText: '',
   activeCategory: 0,
   currentPage: 1,
@@ -14,20 +27,20 @@ const filterSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
-    setCategoryId(state, action) {
+    setCategoryId(state, action: PayloadAction<number>) {
       // в обьектах это называется метод, хотя по факту функция
       state.activeCategory = action.payload;
     },
-    setSearchText(state, action) {
+    setSearchText(state, action: PayloadAction<string>) {
       state.searchText = action.payload;
     },
-    setSort(state, action) {
+    setSort(state, action: PayloadAction<TSort>) {
       state.sort = action.payload;
     },
-    setCurrentPage(state, action) {
+    setCurrentPage(state, action: PayloadAction<number>) {
       state.currentPage = action.payload;
     },
-    setFilters(state, action) {
+    setFilters(state, action: PayloadAction<FilterSliceState>) {
       state.sort = action.payload.sort;
       state.currentPage = Number(action.payload.currentPage);
       state.activeCategory = Number(action.payload.activeCategory);
@@ -35,8 +48,8 @@ const filterSlice = createSlice({
   },
 });
 
-export const sortSelector = (state) => state.filter.sort;
-export const filterSelector = (state) => state.filter;
+export const sortSelector = (state: RootState) => state.filter.sort;
+export const filterSelector = (state: RootState) => state.filter;
 
 export const { setCategoryId, setSort, setCurrentPage, setFilters, setSearchText } = filterSlice.actions;
 

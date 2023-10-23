@@ -1,15 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSort, sortSelector } from '../redux/slises/filterSlice';
+import { TSort, setSort, sortSelector } from '../redux/slises/filterSlice';
 
-type SortItem = {
-  name: string;
-  sortProperty: string;
-}; // создали СВОЙ тип для повторного переиспользования в другом месте, а не писать это все каждый раз
-
-export const sortTypes: SortItem[] = [
-  { name: 'популярности desc', sortProperty: 'rating' },
-  { name: 'популярности asc', sortProperty: '-rating' },
+export const sortTypes: TSort[] = [
+  { name: 'популярности desc', sortProperty: 'raiting' },
+  { name: 'популярности asc', sortProperty: '-raiting' },
   { name: 'цене desc', sortProperty: 'price' },
   { name: 'цене asc', sortProperty: '-price' },
   { name: 'алфавиту desc', sortProperty: 'name' },
@@ -23,7 +18,7 @@ function Sort() {
 
   const [open, setOpen] = React.useState(false);
 
-  const selecting = (index: SortItem) => {
+  const selecting = (index: TSort) => {
     dispatch(setSort(index));
     setOpen(false);
   };
