@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { TSort, setSort, sortSelector } from '../redux/slises/filterSlice';
+import { useDispatch } from 'react-redux';
+import { TSort, setSort } from '../redux/slises/filterSlice';
 
 export const sortTypes: TSort[] = [
   { name: 'популярности desc', sortProperty: 'raiting' },
@@ -11,9 +11,12 @@ export const sortTypes: TSort[] = [
   { name: 'алфавиту asc', sortProperty: '-name' },
 ];
 
-function Sort() {
+type TSortPopupProps = {
+  value: TSort;
+};
+
+const Sort: React.FC<TSortPopupProps> = React.memo(({ value }) => {
   const dispatch = useDispatch();
-  const sort = useSelector(sortSelector);
   const sortRef = React.useRef<HTMLDivElement>(null); // если ничего изначально нету, тогда null
 
   const [open, setOpen] = React.useState(false);
@@ -44,13 +47,13 @@ function Sort() {
             fill="#2C2C2C"></path>
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{sort.name}</span>
+        <span onClick={() => setOpen(!open)}>{value.name}</span>
       </div>
       {open && (
         <div className="sort__popup">
           <ul>
             {sortTypes.map((obj, index) => (
-              <li key={index} onClick={() => selecting(obj)} className={sort.sortProperty === obj.sortProperty ? 'active' : ''}>
+              <li key={index} onClick={() => selecting(obj)} className={value.sortProperty === obj.sortProperty ? 'active' : ''}>
                 {obj.name}
               </li>
             ))}
@@ -59,6 +62,6 @@ function Sort() {
       )}
     </div>
   );
-}
+});
 
 export default Sort;
