@@ -1,26 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-
-export type TCartItem = {
-  id: string;
-  name: string;
-  price: number;
-  imageUrl: string;
-  size: number;
-  type: string;
-  count: number;
-};
-
-type cartSliceState = {
-  // interface типизирует только обьект
-  totalPrice: number;
-  items: TCartItem[];
-};
-
-const initialState: cartSliceState = {
-  totalPrice: 0,
-  items: [],
-};
+import { getCartPizza } from '../../../utils/getCartPizza';
+import { calcTotalPrice } from '../../../utils/calcTotalPrice';
+import { TCartItem, cartSliceState } from './types';
+// это одна из вариаций структуры папок и кода(наверное), типы и селекторы отдельно от слайса, но мне немного лень делать такое для остальных двух слайсов.
+// Также можно уже вынести папку cart из папки slices, но мне опять лень.
+const initialState: cartSliceState = getCartPizza();
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -30,7 +14,6 @@ const cartSlice = createSlice({
       const findItem = state.items.find((obj) => obj.id === action.payload.id);
       if (findItem) {
         findItem.count++;
-        console.log(findItem.count);
       } else {
         state.items.push({
           ...action.payload,
@@ -54,9 +37,7 @@ const cartSlice = createSlice({
     removeItem(state, action: PayloadAction<string>) {
       state.items = state.items.filter((obj) => obj.id !== action.payload);
 
-      state.totalPrice = state.items.reduce((sum, obj) => {
-        return obj.price * obj.count + sum;
-      }, 0);
+      state.totalPrice = calcTotalPrice(state.items);
     },
     clearItems(state) {
       // нет action, можно не типизировать
@@ -66,9 +47,6 @@ const cartSlice = createSlice({
     },
   },
 });
-
-export const cartSelector = (state: RootState) => state.cart;
-export const cartItemSelector = (id: string) => (state: RootState) => state.cart.items.find((obj) => obj.id === id);
 
 export const { addItem, removeItem, minusItem, clearItems } = cartSlice.actions;
 
