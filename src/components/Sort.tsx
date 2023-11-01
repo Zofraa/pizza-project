@@ -1,31 +1,34 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setSort } from '../redux/slises/filterSlice';
+import { useDispatch } from 'react-redux';
+import { TSort, setSort } from '../redux/slises/filterSlice';
 
-export const sortTypes = [
-  { name: 'популярности desc', sortProperty: 'rating' },
-  { name: 'популярности asc', sortProperty: '-rating' },
+export const sortTypes: TSort[] = [
+  { name: 'популярности desc', sortProperty: 'raiting' },
+  { name: 'популярности asc', sortProperty: '-raiting' },
   { name: 'цене desc', sortProperty: 'price' },
   { name: 'цене asc', sortProperty: '-price' },
   { name: 'алфавиту desc', sortProperty: 'name' },
   { name: 'алфавиту asc', sortProperty: '-name' },
 ];
 
-function Sort() {
+type TSortPopupProps = {
+  value: TSort;
+};
+
+const Sort: React.FC<TSortPopupProps> = React.memo(({ value }) => {
   const dispatch = useDispatch();
-  const sort = useSelector((state) => state.filter.sort);
-  const sortRef = React.useRef();
+  const sortRef = React.useRef<HTMLDivElement>(null); // если ничего изначально нету, тогда null
 
   const [open, setOpen] = React.useState(false);
 
-  const selecting = (index) => {
+  const selecting = (index: TSort) => {
     dispatch(setSort(index));
     setOpen(false);
   };
 
   React.useEffect(() => {
-    const clickOutside = (event) => {
-      if (!event.composedPath().includes(sortRef.current)) {
+    const clickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
         setOpen(false);
       }
     };
@@ -44,13 +47,13 @@ function Sort() {
             fill="#2C2C2C"></path>
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{sort.name}</span>
+        <span onClick={() => setOpen(!open)}>{value.name}</span>
       </div>
       {open && (
         <div className="sort__popup">
           <ul>
             {sortTypes.map((obj, index) => (
-              <li key={index} onClick={() => selecting(obj)} className={sort.sortProperty === obj.sortProperty ? 'active' : ''}>
+              <li key={index} onClick={() => selecting(obj)} className={value.sortProperty === obj.sortProperty ? 'active' : ''}>
                 {obj.name}
               </li>
             ))}
@@ -59,6 +62,6 @@ function Sort() {
       )}
     </div>
   );
-}
+});
 
 export default Sort;

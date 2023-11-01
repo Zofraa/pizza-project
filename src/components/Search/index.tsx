@@ -1,21 +1,24 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setSearchText } from '../../redux/slises/filterSlice';
+// @ts-ignore
 import debounce from 'lodash.debounce';
-import { someContext } from '../../App';
-
 import styles from './Search.module.scss';
 
-const Search = () => {
+const Search: React.FC = () => {
+  const dispatch = useDispatch();
   const [value, setValue] = React.useState('');
-  const { setSearchText } = React.useContext(someContext);
 
   const updateImput = React.useCallback(
-    debounce((str) => {
-      setSearchText(str);
+    debounce((str: string) => {
+      // debounce не имеет обновленных типов, приходится указывать вручную
+      dispatch(setSearchText(str));
     }, 500),
     []
   );
 
-  const onChangeImput = (ev) => {
+  const onChangeImput = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    // ChangeEvent для изменения input и пр, но не для onClick
     setValue(ev.target.value);
     updateImput(ev.target.value);
   };

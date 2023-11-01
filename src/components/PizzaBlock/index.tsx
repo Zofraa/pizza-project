@@ -1,26 +1,40 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { addItem } from '../../redux/slises/cartSlice';
+import { TCartItem } from '../../redux/slises/cart/types';
+import { cartItemSelector } from '../../redux/slises/cart/selectors';
+import { addItem } from '../../redux/slises/cart/slice';
+
+import { Link } from 'react-router-dom';
 
 const typeList = ['тонкое', 'традиционное'];
 
-function PizzaBlock({ id, name, price, imageUrl, sizes, types }) {
+type PizzaBlockProps = {
+  id: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+  sizes: number[];
+  types: number[];
+};
+
+const PizzaBlock: React.FC<PizzaBlockProps> = ({ id, name, price, imageUrl, sizes, types }) => {
   const dispatch = useDispatch();
-  const cartItem = useSelector((state) => state.cart.items.find((obj) => obj.id === id));
+  const cartItem = useSelector(cartItemSelector(id));
   const [currentType, setType] = React.useState(0);
   const [currentSize, setSize] = React.useState(0);
 
   let addedCount = cartItem ? cartItem.count : 0;
 
   const onCLickAdd = () => {
-    const item = {
+    const item: TCartItem = {
       id,
       name,
       price,
       imageUrl,
       size: sizes[currentSize],
       type: typeList[currentType],
+      count: 0,
     };
     dispatch(addItem(item));
   };
@@ -28,7 +42,9 @@ function PizzaBlock({ id, name, price, imageUrl, sizes, types }) {
   return (
     <div className="pizza-block-wrapper">
       <div className="pizza-block">
-        <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+        <Link to={`/pizza/${id}`}>
+          <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+        </Link>
         <h4 className="pizza-block__title">{name}</h4>
         <div className="pizza-block__selector">
           <ul>
@@ -61,6 +77,6 @@ function PizzaBlock({ id, name, price, imageUrl, sizes, types }) {
       </div>
     </div>
   );
-}
+};
 
 export default PizzaBlock;
