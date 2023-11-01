@@ -3,11 +3,10 @@ import qs from 'qs';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import Categories from '../components/Categories';
-import Sort, { sortTypes } from '../components/Sort';
-import PizzaSkeleton from '../components/PizzaBlock/PizzaSkeleton';
-import PizzaBlock from '../components/PizzaBlock';
-import Pagination from '../components/Pagination';
+import { Sort, Categories, PizzaSkeleton, PizzaBlock, Pagination } from '../components';
+// это называется Reexport, сокращает кол-во import, но также можно и оптимизировать с его помощью
+
+import { sortTypes } from '../components/Sort';
 
 import { FilterSliceState, filterSelector, setCategoryId, setCurrentPage, setFilters } from '../redux/slises/filterSlice';
 import { fetchPizzas, selectPizzaData } from '../redux/slises/pizzaSlice';
